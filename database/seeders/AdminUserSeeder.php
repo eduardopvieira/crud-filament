@@ -13,15 +13,13 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Tenta encontrar o usuário pelo e-mail.
-        // Se não encontrar, cria com os dados fornecidos.
         User::firstOrCreate(
             [
                 'email' => 'admin@admin.com'
             ],
             [
                 'name' => 'admin',
-                'password' => Hash::make('admin'), // Criptografa a senha 'admin'
+                'password' => Hash::make('admin'), // <- achei esse comando legal
             ]
         );
     }
