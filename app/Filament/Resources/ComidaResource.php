@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
+use \Filament\Tables\Filters\SelectFilter;
 
 class ComidaResource extends Resource
 {
@@ -75,6 +76,11 @@ class ComidaResource extends Resource
                     ->sortable()
                     ->label('Nome'),
 
+                TextColumn::make('descricao')
+                    ->searchable()
+                    ->words(4)
+                    ->label('Descrição'),
+
                 TextColumn::make('categoria.nome')
                     ->sortable()
                     ->label('Categoria'),
@@ -96,7 +102,26 @@ class ComidaResource extends Resource
                     ->label('Quantidade'),
             ])
             ->filters([
-                //
+                SelectFilter::make('categoria')
+                    ->relationship('categoria', 'nome')
+                    ->label('Filtrar por Categoria'),
+
+                SelectFilter::make('tipo')
+                    ->relationship('tipo', 'nome')
+                    ->label('Filtrar por Tipo'),
+
+                SelectFilter::make('busca_texto')
+                    ->form([
+                        TextInput::make('termo')
+                            ->label('Buscar por Nome ou Descrição'),
+                    ])
+
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['termo'],
+                            fn (Builder $query, $termo) => $query->whereFullText(['nome', 'descricao'], $termo)
+                        );
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
