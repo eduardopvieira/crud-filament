@@ -3,65 +3,66 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ComidaResource\Pages;
-use App\Filament\Resources\ComidaResource\RelationManagers;
 use App\Models\Comida;
-use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Builder;
 
 class ComidaResource extends Resource
 {
     protected static ?string $model = Comida::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-beaker';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('nome')
-                ->required()
-                ->maxLength(255),
+                    ->required()
+                    ->maxLength(255),
+
+                TextInput::make('descricao')
+                    ->maxLength(255)
+                    ->nullable(),
 
                 Select::make('categoria_id')
-                ->relationship('categoria', 'nome')
-                ->required()
-                ->label('Categoria'),
+                    ->relationship('categoria', 'nome')
+                    ->required()
+                    ->label('Categoria'),
 
                 Select::make('tipo_id')
-                ->relationship('tipo', 'nome')
-                ->required()
-                ->label('Tipo'),
+                    ->relationship('tipo', 'nome')
+                    ->required()
+                    ->label('Tipo'),
 
                 Select::make('modo-de-preparo')
-                ->label('Modo de Preparo')
-                ->options([
-                    'Frito' => 'Frito',
-                    'Assado' => 'Assado',
-                    'Grelhado' => 'Grelhado',
-                    'Cozido' => 'Cozido',
-                    'Não Aplicável' => 'Não Aplicável',
-                ])
-                ->required(),
-                
+                    ->label('Modo de Preparo')
+                    ->options([
+                        'frito' => 'Frito',
+                        'assado' => 'Assado',
+                        'cozido' => 'Cozido',
+                        'puro' => 'Puro (In Natura)',
+                        'nao_aplica' => 'Não se Aplica',
+                    ])
+                    ->required(),
+
                 TextInput::make('preco')
-                ->required()
-                ->numeric()
-                ->label('Preço')
-                ->prefix('R$ '),
+                    ->required()
+                    ->numeric()
+                    ->label('Preço')
+                    ->prefix('R$'),
 
                 TextInput::make('quantidade')
-                ->required()
-                ->numeric()
-                ->default(0)
-                ->label('Quantidade'),
+                    ->required()
+                    ->numeric()
+                    ->default(0)
+                    ->label('Quantidade'),
             ]);
     }
 
@@ -69,37 +70,30 @@ class ComidaResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                ->searchable()
-                ->sortable()
-                ->label('ID'),
-
                 TextColumn::make('nome')
-                ->searchable()
-                ->sortable()
-                ->label('Nome'),
+                    ->searchable() 
+                    ->sortable()
+                    ->label('Nome'),
 
                 TextColumn::make('categoria.nome')
-                ->searchable()
-                ->sortable()
-                ->label('Categoria'),
+                    ->sortable()
+                    ->label('Categoria'),
 
                 TextColumn::make('tipo.nome')
-                ->searchable()
-                ->sortable()
-                ->label('Tipo'),
+                    ->sortable()
+                    ->label('Tipo'),
+
+                TextColumn::make('modo-de-preparo')
+                    ->badge()
+                    ->label('Preparo'),
 
                 TextColumn::make('preco')
-                ->money('BRL')
-                ->label('Preço'),
+                    ->money('BRL')
+                    ->label('Preço'),
 
                 TextColumn::make('quantidade')
-                ->sortable()
-                ->label('Quantidade'),
-
-                TextColumn::make('created_at')
-                ->dateTime()
-                ->label('Criado em'),
+                    ->sortable()
+                    ->label('Quantidade'),
             ])
             ->filters([
                 //
@@ -128,5 +122,20 @@ class ComidaResource extends Resource
             'create' => Pages\CreateComida::route('/create'),
             'edit' => Pages\EditComida::route('/{record}/edit'),
         ];
+    }
+    
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['nome', 'descricao'];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['categoria', 'tipo']);
+    }
+
+    public static function applyGlobalSearchToQuery(Builder $query, string $search): Builder
+    {
+        return $query->whereFullText(['nome', 'descricao'], $search);
     }
 }
