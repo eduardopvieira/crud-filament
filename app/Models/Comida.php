@@ -9,7 +9,7 @@ class Comida extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['nome', 'preco', 'quantidade', 'modo-de-preparo', 'tipo_id', 'categoria_id'];
+    protected $fillable = ['nome', 'descricao', 'preco', 'quantidade', 'tipo_id', 'categoria_id'];
 
     public function categoria()
     {
