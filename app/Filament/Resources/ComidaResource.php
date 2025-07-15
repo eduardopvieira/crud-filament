@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ComidaResource\Pages;
 use App\Models\Comida;
 use Filament\Forms\Components\Select;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,7 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
-use \Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Filter;
 
 class ComidaResource extends Resource
 {
@@ -42,17 +43,6 @@ class ComidaResource extends Resource
                     ->required()
                     ->label('Tipo'),
 
-                Select::make('modo-de-preparo')
-                    ->label('Modo de Preparo')
-                    ->options([
-                        'frito' => 'Frito',
-                        'assado' => 'Assado',
-                        'cozido' => 'Cozido',
-                        'puro' => 'Puro (In Natura)',
-                        'nao_aplica' => 'Não se Aplica',
-                    ])
-                    ->required(),
-
                 TextInput::make('preco')
                     ->required()
                     ->numeric()
@@ -68,70 +58,39 @@ class ComidaResource extends Resource
     }
 
     public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                TextColumn::make('nome')
-                    ->searchable() 
-                    ->sortable()
-                    ->label('Nome'),
+{
+    return $table
+        ->defaultSort('created_at', 'desc')
+        ->columns([
+            TextColumn::make('nome')
+                ->searchable(),
 
-                TextColumn::make('descricao')
-                    ->searchable()
-                    ->words(4)
-                    ->label('Descrição'),
+            TextColumn::make('descricao')
+                ->searchable(),
 
-                TextColumn::make('categoria.nome')
-                    ->sortable()
-                    ->label('Categoria'),
+            TextColumn::make('categoria.nome')->sortable(),
+            TextColumn::make('tipo.nome')->sortable(),
+            TextColumn::make('preco')->money('BRL'),
+            TextColumn::make('quantidade')->sortable(),
+        ])
+        ->filters([
+            SelectFilter::make('categoria')
+                ->relationship('categoria', 'nome')
+                ->label('Categoria'),
 
-                TextColumn::make('tipo.nome')
-                    ->sortable()
-                    ->label('Tipo'),
-
-                TextColumn::make('modo-de-preparo')
-                    ->badge()
-                    ->label('Preparo'),
-
-                TextColumn::make('preco')
-                    ->money('BRL')
-                    ->label('Preço'),
-
-                TextColumn::make('quantidade')
-                    ->sortable()
-                    ->label('Quantidade'),
-            ])
-            ->filters([
-                SelectFilter::make('categoria')
-                    ->relationship('categoria', 'nome')
-                    ->label('Filtrar por Categoria'),
-
-                SelectFilter::make('tipo')
-                    ->relationship('tipo', 'nome')
-                    ->label('Filtrar por Tipo'),
-
-                SelectFilter::make('busca_texto')
-                    ->form([
-                        TextInput::make('termo')
-                            ->label('Buscar por Nome ou Descrição'),
-                    ])
-
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query->when(
-                            $data['termo'],
-                            fn (Builder $query, $termo) => $query->whereFullText(['nome', 'descricao'], $termo)
-                        );
-                    }),
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
+            SelectFilter::make('tipo')
+                ->relationship('tipo', 'nome')
+                ->label('Tipo'),
+        ])
+        ->actions([
+            \Filament\Tables\Actions\EditAction::make(),
+        ])
+        ->bulkActions([
+            \Filament\Tables\Actions\BulkActionGroup::make([
+                \Filament\Tables\Actions\DeleteBulkAction::make(),
+            ]),
+        ]);
+}
 
     public static function getRelations(): array
     {
@@ -154,6 +113,8 @@ class ComidaResource extends Resource
         return ['nome', 'descricao'];
     }
 
+    //as funçoes abaixo otimizam consultas globais com algo chamado "eager loading". bem importante.
+
     public static function getGlobalSearchEloquentQuery(): Builder
     {
         return parent::getGlobalSearchEloquentQuery()->with(['categoria', 'tipo']);
@@ -162,5 +123,10 @@ class ComidaResource extends Resource
     public static function applyGlobalSearchToQuery(Builder $query, string $search): Builder
     {
         return $query->whereFullText(['nome', 'descricao'], $search);
+    }
+    
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['categoria', 'tipo']);
     }
 }
