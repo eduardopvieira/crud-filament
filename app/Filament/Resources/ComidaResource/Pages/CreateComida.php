@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateComida extends CreateRecord
 {
     protected static string $resource = ComidaResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
