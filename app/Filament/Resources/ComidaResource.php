@@ -62,6 +62,9 @@ class ComidaResource extends Resource
     return $table
         ->defaultSort('created_at', 'desc')
         ->columns([
+            TextColumn::make('id')
+                ->searchable(),
+
             TextColumn::make('nome')
                 ->searchable(),
 
