@@ -16,8 +16,6 @@ class ComidaFactory extends Factory
             'descricao' => fake()->sentence(),
             'preco' => fake()->randomFloat(2, 5, 100),
             'quantidade' => fake()->numberBetween(10, 200),
-            'modo-de-preparo' => fake()->randomElement(['frito', 'assado', 'cozido', 'natural', 'industrializado', 'nao_aplica']),
-
             'categoria_id' => Categoria::inRandomOrder()->first()->id,
             'tipo_id' => Tipo::inRandomOrder()->first()->id,
         ];
