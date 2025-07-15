@@ -12,8 +12,8 @@ class Tipo extends Model
 
     protected $fillable = ['nome'];
 
-    // public function comidas(): HasMany
-    // {
-    //     return $this->hasMany(Comida::class);
-    // }
+    public function comidas(): HasMany
+    {
+        return $this->hasMany(Comida::class);
+    }
 }

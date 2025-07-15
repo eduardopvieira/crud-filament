@@ -11,8 +11,8 @@ class Categoria extends Model
 
     protected $fillable = ['nome'];
     
-    // public function comidas()
-    // {
-    //     return $this->hasMany(Comida::class);
-    // }
+    public function comidas()
+    {
+        return $this->hasMany(Comida::class);
+    }
 }
