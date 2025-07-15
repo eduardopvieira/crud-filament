@@ -11,8 +11,14 @@ class TipoSeeder extends Seeder
     {
         Tipo::create(['nome' => 'Fritura']);
         Tipo::create(['nome' => 'Assado']);
-        Tipo::create(['nome' => 'Receita']);
-        Tipo::create(['nome' => 'Puro (In Natura)']);
+        Tipo::create(['nome' => 'Natural']);
         Tipo::create(['nome' => 'Industrializado']);
+        Tipo::create(['nome' => 'Congelado']);
+        Tipo::create(['nome' => 'Enlatado']);
+        Tipo::create(['nome' => 'Desidratado']);
+        Tipo::create(['nome' => 'Defumado']);
+        Tipo::create(['nome' => 'Fermentado']);
+        Tipo::create(['nome' => 'Grelhado']);
+        Tipo::create(['nome' => 'Empanado']);
     }
 }
