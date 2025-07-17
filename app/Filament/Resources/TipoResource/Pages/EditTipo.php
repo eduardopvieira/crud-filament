@@ -38,4 +38,9 @@ class EditTipo extends EditRecord
             ->color('danger')
             ->icon('heroicon-o-x-mark');
     }
+
+     public function getTitle(): string
+    {
+        return 'Editar Tipo';
+    }
 }

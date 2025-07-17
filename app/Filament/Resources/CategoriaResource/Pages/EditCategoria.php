@@ -39,4 +39,9 @@ class EditCategoria extends EditRecord
             ->icon('heroicon-o-x-mark');
 
     }
+
+     public function getTitle(): string
+    {
+        return 'Editar Categoria';
+    }
 }

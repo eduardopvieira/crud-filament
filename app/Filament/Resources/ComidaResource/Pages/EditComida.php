@@ -6,6 +6,7 @@ use App\Filament\Resources\ComidaResource;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
+use \Illuminate\Contracts\Support\Htmlable;
 
 class EditComida extends EditRecord
 {
@@ -42,5 +43,10 @@ class EditComida extends EditRecord
             ->color('danger')
             ->icon('heroicon-o-x-mark');
 
+    }
+
+    public function getTitle(): string
+    {
+        return 'Editar Comida';
     }
 }
