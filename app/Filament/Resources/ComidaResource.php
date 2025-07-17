@@ -69,7 +69,8 @@ class ComidaResource extends Resource
                 ->searchable(),
 
             TextColumn::make('descricao')
-                ->searchable(),
+                ->searchable()
+                ->words(4),
 
             TextColumn::make('categoria.nome')->sortable(),
             TextColumn::make('tipo.nome')->sortable(),
@@ -86,7 +87,12 @@ class ComidaResource extends Resource
                 ->label('Tipo'),
         ])
         ->actions([
-            \Filament\Tables\Actions\EditAction::make(),
+            \Filament\Tables\Actions\ViewAction::make()
+            ->label('Visualizar'),
+            \Filament\Tables\Actions\EditAction::make()
+            ->label('Editar'),
+            \Filament\Tables\Actions\DeleteAction::make()
+            ->label('Excluir'),
         ])
         ->bulkActions([
             \Filament\Tables\Actions\BulkActionGroup::make([
