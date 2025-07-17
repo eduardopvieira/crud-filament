@@ -32,4 +32,8 @@ class CreateComida extends CreateRecord
             ->label('Cancelar')
             ->color('danger');
     }
+    public function getTitle(): string
+    {
+        return 'Criar Comida';
+    }
 }

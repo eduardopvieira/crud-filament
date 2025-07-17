@@ -27,4 +27,9 @@ class CreateCategoria extends CreateRecord
             ->label('Cancelar')
             ->color('danger');
     }
+
+    public function getTitle(): string
+    {
+        return 'Criar Categoria';
+    }
 }
