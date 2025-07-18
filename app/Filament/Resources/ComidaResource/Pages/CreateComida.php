@@ -10,16 +10,17 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateComida extends CreateRecord
 {
     protected static string $resource = ComidaResource::class;
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }
 
-    protected function getCreateFormAction(): Action {
-        return parent::getCreateFormAction()
-            ->label('Criar')
-            ->color('success');
-    }
+    // protected function getCreateFormAction(): Action {
+    //     return parent::getCreateFormAction()
+    //         ->label('Criar')
+    //         ->color('success');
+    // }
 
     protected function getCreateAnotherFormAction(): Action {
         return parent::getCreateAnotherFormAction()
