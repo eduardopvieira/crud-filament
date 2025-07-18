@@ -16,6 +16,7 @@ class CategoriaResource extends Resource
 {
     protected static ?string $model = Categoria::class;
 
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function getFormComponents(): array
@@ -90,7 +91,6 @@ class CategoriaResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\ComidasRelationManager::class,
         ];
     }
 

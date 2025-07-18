@@ -19,6 +19,8 @@ use Tables\Actions\EditAction;
 class ComidaResource extends Resource
 {
     protected static ?string $model = Comida::class;
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationIcon = 'heroicon-o-beaker';
 
     public static function getFormComponents(): array
