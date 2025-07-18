@@ -37,6 +37,7 @@ class CategoriasTableWidget extends BaseWidget
     {
         return $table
             ->query($this->getTableQuery())
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 TextColumn::make('id')
                     ->searchable()
