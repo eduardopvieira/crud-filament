@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Infolists\Components\TextEntry;
 
 class CategoriaResource extends Resource
 {
@@ -97,6 +98,20 @@ class CategoriaResource extends Resource
     {
         return [
             'index' => Pages\ListCategorias::route('/'),
+        ];
+    }
+
+    public static function getInfolistComponents(): array
+    {
+        return [
+            TextEntry::make('nome')
+                ->label('Nome da Categoria'),
+            TextEntry::make('created_at')
+                ->label('Criado em')
+                ->dateTime(),
+            TextEntry::make('updated_at')
+                ->label('Atualizado em')
+                ->dateTime(),
         ];
     }
 }

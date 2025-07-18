@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Infolists\Components\TextEntry;
 
 class TipoResource extends Resource
 {
@@ -91,6 +92,21 @@ class TipoResource extends Resource
             //
         ];
     }
+
+    public static function getInfolistComponents(): array
+    {
+        return [
+            TextEntry::make('nome')
+                ->label('Nome do Tipo'),
+            TextEntry::make('created_at')
+                ->label('Criado em')
+                ->dateTime(),
+            TextEntry::make('updated_at')
+                ->label('Atualizado em')
+                ->dateTime(),
+        ];
+    }
+
 
     public static function getPages(): array
     {
