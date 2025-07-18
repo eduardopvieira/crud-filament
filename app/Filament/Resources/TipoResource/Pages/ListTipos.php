@@ -13,10 +13,6 @@ class ListTipos extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-            ->label('Criar Tipo')
-            ->color('success')
-            ->icon('heroicon-o-plus'),
         ];
     }
 }
