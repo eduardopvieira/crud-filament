@@ -52,18 +52,21 @@ class TipoResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
+                 Tables\Actions\ViewAction::make()
                     ->infolist(self::getFormComponents())
-                    ->color('info'),
+                    ->label('Visualizar'),
+
                 Tables\Actions\EditAction::make()
                     ->form(self::getFormComponents())
-                    ->color('gray')
-                    ->modalHeading('Editar Tipo')
+                    ->color('primary')
+                    ->label('Editar')
+                    ->modalHeading('Editar Categoria')
                     ->modalSubmitActionLabel('Salvar alterações')
                     ->modalCancelActionLabel('Cancelar')
                     ->modalSubmitAction(fn ($action) => $action->color('success'))
                     ->modalCancelAction(fn ($action) => $action->color('danger')),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Excluir'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
