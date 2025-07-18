@@ -39,7 +39,7 @@ class TiposTableWidget extends BaseWidget
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->infolist(\App\Filament\Resources\TipoResource::getFormComponents())
+                    ->infolist(\App\Filament\Resources\TipoResource::getInfolistComponents())
                     ->label('Visualizar'),
 
                 Tables\Actions\EditAction::make()

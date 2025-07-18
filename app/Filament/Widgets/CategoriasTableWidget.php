@@ -8,6 +8,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 use Filament\Tables\Columns\TextColumn;
 use App\Models\Categoria;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\TextEntry;
 
 class CategoriasTableWidget extends BaseWidget
 {
@@ -17,6 +18,21 @@ class CategoriasTableWidget extends BaseWidget
     {
         return Categoria::query();
     }
+
+    public static function getInfolistComponents(): array
+    {
+        return [
+            TextEntry::make('nome')
+                ->label('Nome da Categoria'),
+            TextEntry::make('created_at')
+                ->label('Criado em')
+                ->dateTime(),
+            TextEntry::make('updated_at')
+                ->label('Atualizado em')
+                ->dateTime(),
+        ];
+    }
+
     public function table(Table $table): Table
     {
         return $table
@@ -39,7 +55,7 @@ class CategoriasTableWidget extends BaseWidget
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->infolist(\App\Filament\Resources\CategoriaResource::getFormComponents())
+                    ->infolist(\App\Filament\Resources\CategoriaResource::getInfolistComponents())
                     ->label('Visualizar'),
 
                 Tables\Actions\EditAction::make()
