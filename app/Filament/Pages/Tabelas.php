@@ -3,7 +3,7 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
-use Livewire\Attributes\Url; // Importe a classe Url
+use Livewire\Attributes\Url;
 
 class Tabelas extends Page
 {

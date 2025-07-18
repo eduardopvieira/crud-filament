@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\ComidaResource\Pages;
 
 use App\Filament\Resources\ComidaResource;
-use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListComidas extends ListRecords

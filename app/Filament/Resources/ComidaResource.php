@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ComidaResource\Pages;
 use App\Models\Comida;
-use Faker\Core\Color;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -14,7 +13,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Tables\Actions\EditAction;
 
 class ComidaResource extends Resource
 {
@@ -124,8 +122,6 @@ class ComidaResource extends Resource
     {
         return [
             'index' => Pages\ListComidas::route('/'),
-            //'create' => Pages\CreateComida::route('/create'),
-            //'edit' => Pages\EditComida::route('/{record}/edit'),
         ];
     }
 

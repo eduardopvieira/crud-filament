@@ -6,7 +6,6 @@ use App\Filament\Resources\ComidaResource;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
-use \Illuminate\Contracts\Support\Htmlable;
 
 class EditComida extends EditRecord
 {

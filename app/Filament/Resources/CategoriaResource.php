@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoriaResource\Pages;
-use App\Filament\Resources\CategoriaResource\RelationManagers;
 use App\Models\Categoria;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;

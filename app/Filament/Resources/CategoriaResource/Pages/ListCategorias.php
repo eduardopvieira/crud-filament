@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\CategoriaResource\Pages;
 
 use App\Filament\Resources\CategoriaResource;
-use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListCategorias extends ListRecords
