@@ -10,6 +10,11 @@ class CreateTipo extends CreateRecord
 {
     protected static string $resource = TipoResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
     protected function getCreateFormAction(): Action {
         return parent::getCreateFormAction()
             ->label('Criar')

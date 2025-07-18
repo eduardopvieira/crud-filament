@@ -10,6 +10,11 @@ class CreateCategoria extends CreateRecord
 {
     protected static string $resource = CategoriaResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
     protected function getCreateFormAction(): Action {
         return parent::getCreateFormAction()
             ->label('Criar')
