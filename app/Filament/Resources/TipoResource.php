@@ -3,17 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TipoResource\Pages;
-use App\Filament\Resources\TipoResource\RelationManagers;
 use App\Models\Tipo;
-use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TipoResource extends Resource
 {
@@ -21,16 +17,19 @@ class TipoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function getFormComponents(): array
     {
-        return $form
-            ->schema([
-                TextInput::make('nome')
+        return [
+            TextInput::make('nome')
                 ->required()
                 ->maxLength(255)
-                ->unique(ignoreRecord: true)   
+                ->unique(ignoreRecord: true),
+        ];
+    }
 
-            ]);
+    public static function form(Form $form): Form
+    {
+        return $form->schema(self::getFormComponents());
     }
 
     public static function table(Table $table): Table
@@ -38,27 +37,48 @@ class TipoResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                ->searchable()
-                ->sortable()
-                ->label('ID'),
+                    ->searchable()
+                    ->sortable()
+                    ->label('ID'),
                 TextColumn::make('nome')
-                ->searchable()
-                ->sortable()
-                ->label('Tipo'),
+                    ->searchable()
+                    ->sortable()
+                    ->label('Tipo'),
                 TextColumn::make('created_at')
-                ->dateTime()
-                ->label('Criado em'),
+                    ->dateTime()
+                    ->label('Criado em'),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(), \Filament\Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->infolist(self::getFormComponents())
+                    ->color('info'),
+                Tables\Actions\EditAction::make()
+                    ->form(self::getFormComponents())
+                    ->color('gray')
+                    ->modalHeading('Editar Tipo')
+                    ->modalSubmitActionLabel('Salvar alterações')
+                    ->modalCancelActionLabel('Cancelar')
+                    ->modalSubmitAction(fn ($action) => $action->color('success'))
+                    ->modalCancelAction(fn ($action) => $action->color('danger')),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make()
+                    ->label('Novo Tipo')
+                    ->color('success')
+                    ->icon('heroicon-o-plus')
+                    ->modalHeading('Registrar Novo Tipo')
+                    ->modalSubmitActionLabel('Salvar')
+                    ->modalCancelActionLabel('Cancelar')
+                    ->createAnother(false),
             ]);
     }
 
@@ -73,8 +93,6 @@ class TipoResource extends Resource
     {
         return [
             'index' => Pages\ListTipos::route('/'),
-            'create' => Pages\CreateTipo::route('/create'),
-            'edit' => Pages\EditTipo::route('/{record}/edit'),
         ];
     }
 }
