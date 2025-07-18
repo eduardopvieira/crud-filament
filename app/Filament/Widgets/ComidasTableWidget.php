@@ -2,17 +2,20 @@
 
 namespace App\Filament\Widgets;
 
-use Filament\Tables;
-use Filament\Tables\Table;
 use App\Models\Comida;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Infolists\Infolist;
 
 class ComidasTableWidget extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full';
+    protected static bool $isLazy = true;
 
     protected function getTableQuery(): Builder
     {
@@ -42,8 +45,29 @@ class ComidasTableWidget extends BaseWidget
                     ->label('Tipo'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()->label('Visualizar'),
-                
+                Tables\Actions\ViewAction::make()
+                    ->label('Visualizar')
+                    ->infolist(fn (Infolist $infolist) => $infolist
+                        ->schema([
+                            TextEntry::make('nome'),
+                            TextEntry::make('descricao'),
+                            TextEntry::make('categoria.nome')
+                                ->label('Categoria'),
+                            TextEntry::make('tipo.nome')
+                                ->label('Tipo'),
+                            TextEntry::make('preco')
+                                ->money('BRL'),
+                            TextEntry::make('quantidade'),
+                            TextEntry::make('created_at')
+                                ->label('Criado em')
+                                ->dateTime(),
+                            TextEntry::make('updated_at')
+                                ->label('Atualizado em')
+                                ->dateTime(),
+                        ])
+                        ->columns(2)
+                    ),
+
                 Tables\Actions\EditAction::make()
                     ->form(\App\Filament\Resources\ComidaResource::getFormComponents())
                     ->label('Editar')
