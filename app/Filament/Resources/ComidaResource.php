@@ -13,6 +13,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
 
 class ComidaResource extends Resource
 {
@@ -79,11 +81,13 @@ class ComidaResource extends Resource
                     ->label('Tipo'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()->label('Visualizar'),
-                
+                Tables\Actions\ViewAction::make()
+                    ->label('Visualizar')
+                    ->infolist(\App\Filament\Resources\ComidaResource::getInfolistComponents())
+                    ->columns(2),
+            
                 Tables\Actions\EditAction::make()
-                ->form(ComidaResource::getFormComponents())
-                
+                ->form(\App\Filament\Resources\ComidaResource::getFormComponents())
                 ->label('Editar')
                 ->color('primary')
                 ->modalHeading('Editar Comida')
@@ -91,8 +95,7 @@ class ComidaResource extends Resource
                 ->modalCancelActionLabel('Cancelar')
                 ->modalSubmitAction(fn ($action) => $action->color('success'))
                 ->modalCancelAction(fn ($action) => $action->color('danger')),
-
-                Tables\Actions\DeleteAction::make()->label('Excluir'),
+            Tables\Actions\DeleteAction::make()->label('Excluir'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -109,6 +112,37 @@ class ComidaResource extends Resource
                     ->createAnother(false)
                     ->modalHeading('Registrar Nova Comida'),
             ]);
+    }
+
+    public static function getInfolistComponents(): array
+    {
+        return [
+            TextEntry::make('nome'),
+            TextEntry::make('descricao'),
+            
+            //relacionamentos, tem q fzr algo diferente
+            TextEntry::make('categoria.nome')
+                ->label('Categoria'),
+            TextEntry::make('tipo.nome')
+                ->label('Tipo'),
+
+            TextEntry::make('preco')
+                ->money('BRL'),
+            TextEntry::make('quantidade'),
+            TextEntry::make('created_at')
+                ->label('Criado em')
+                ->dateTime(),
+            TextEntry::make('updated_at')
+                ->label('Atualizado em')
+                ->dateTime(),
+        ];
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema(self::getInfolistComponents())
+            ->columns(2);
     }
 
     public static function getRelations(): array
