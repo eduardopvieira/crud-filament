@@ -2,15 +2,10 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TipoResource\Pages;
 use App\Models\Tipo;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
-use Filament\Infolists\Components\TextEntry;
 
 class TipoResource extends Resource
 {
@@ -24,7 +19,8 @@ class TipoResource extends Resource
             TextInput::make('nome')
                 ->required()
                 ->maxLength(255)
-                ->unique(ignoreRecord: true),
+                ->unique(ignoreRecord: true)
+                ->label('Nome do Tipo'),
         ];
     }
 
@@ -33,85 +29,13 @@ class TipoResource extends Resource
         return $form->schema(self::getFormComponents());
     }
 
-    public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                TextColumn::make('id')
-                    ->searchable()
-                    ->sortable()
-                    ->label('ID'),
-                TextColumn::make('nome')
-                    ->searchable()
-                    ->sortable()
-                    ->label('Tipo'),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->label('Criado em'),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                 Tables\Actions\ViewAction::make()
-                    ->infolist(self::getFormComponents())
-                    ->label('Visualizar'),
-
-                Tables\Actions\EditAction::make()
-                    ->form(self::getFormComponents())
-                    ->color('primary')
-                    ->label('Editar')
-                    ->modalHeading('Editar Categoria')
-                    ->modalSubmitActionLabel('Salvar alterações')
-                    ->modalCancelActionLabel('Cancelar')
-                    ->modalSubmitAction(fn ($action) => $action->color('success'))
-                    ->modalCancelAction(fn ($action) => $action->color('danger')),
-                Tables\Actions\DeleteAction::make()
-                    ->label('Excluir'),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ])
-            ->headerActions([
-                Tables\Actions\CreateAction::make()
-                    ->label('Novo Tipo')
-                    ->color('success')
-                    ->icon('heroicon-o-plus')
-                    ->modalHeading('Registrar Novo Tipo')
-                    ->modalSubmitActionLabel('Salvar')
-                    ->modalCancelActionLabel('Cancelar')
-                    ->createAnother(false),
-            ]);
-    }
-
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
-
-    public static function getInfolistComponents(): array
-    {
-        return [
-            TextEntry::make('nome')
-                ->label('Nome do Tipo'),
-            TextEntry::make('created_at')
-                ->label('Criado em')
-                ->dateTime(),
-            TextEntry::make('updated_at')
-                ->label('Atualizado em')
-                ->dateTime(),
-        ];
-    }
-
 
     public static function getPages(): array
     {
-        return [
-            'index' => Pages\ListTipos::route('/'),
-        ];
+        return [];
     }
 }
