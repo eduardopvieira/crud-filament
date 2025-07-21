@@ -2,25 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ComidaResource\Pages;
 use App\Models\Comida;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Infolists\Infolist;
-use Filament\Infolists\Components\TextEntry;
 
 class ComidaResource extends Resource
 {
     protected static ?string $model = Comida::class;
     protected static bool $shouldRegisterNavigation = false;
-
     protected static ?string $navigationIcon = 'heroicon-o-beaker';
 
     public static function getFormComponents(): array
@@ -31,7 +23,8 @@ class ComidaResource extends Resource
                 ->maxLength(255),
             TextInput::make('descricao')
                 ->maxLength(255)
-                ->nullable(),
+                ->nullable()
+                ->label('Descrição'),
             Select::make('categoria_id')
                 ->relationship('categoria', 'nome')
                 ->required()
@@ -52,111 +45,20 @@ class ComidaResource extends Resource
                 ->label('Quantidade'),
         ];
     }
-
-  
+ 
     public static function form(Form $form): Form
     {
         return $form->schema(self::getFormComponents());
     }
 
-    public static function table(Table $table): Table
-    {
-        return $table
-            ->defaultSort('created_at', 'desc')
-            ->columns([
-                TextColumn::make('id')->searchable(),
-                TextColumn::make('nome')->searchable(),
-                TextColumn::make('descricao')->searchable()->words(4),
-                TextColumn::make('categoria.nome')->sortable(),
-                TextColumn::make('tipo.nome')->sortable(),
-                TextColumn::make('preco')->money('BRL'),
-                TextColumn::make('quantidade')->sortable(),
-            ])
-            ->filters([
-                SelectFilter::make('categoria')
-                    ->relationship('categoria', 'nome')
-                    ->label('Categoria'),
-                SelectFilter::make('tipo')
-                    ->relationship('tipo', 'nome')
-                    ->label('Tipo'),
-            ])
-            ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->label('Visualizar')
-                    ->infolist(\App\Filament\Resources\ComidaResource::getInfolistComponents())
-                    ->columns(2),
-            
-                Tables\Actions\EditAction::make()
-                ->form(\App\Filament\Resources\ComidaResource::getFormComponents())
-                ->label('Editar')
-                ->color('primary')
-                ->modalHeading('Editar Comida')
-                ->modalSubmitActionLabel('Salvar alterações')
-                ->modalCancelActionLabel('Cancelar')
-                ->modalSubmitAction(fn ($action) => $action->color('success'))
-                ->modalCancelAction(fn ($action) => $action->color('danger')),
-            Tables\Actions\DeleteAction::make()->label('Excluir'),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ])
-            ->headerActions([
-                Tables\Actions\CreateAction::make()
-                    ->label('Criar Comida')
-                    ->color('success')
-                    ->modalSubmitActionLabel('Salvar Comida')
-                    ->icon('heroicon-o-plus')
-                    ->modalCancelActionLabel('Voltar')
-                    ->createAnother(false)
-                    ->modalHeading('Registrar Nova Comida'),
-            ]);
-    }
-
-    public static function getInfolistComponents(): array
-    {
-        return [
-            TextEntry::make('nome'),
-            TextEntry::make('descricao'),
-            
-            //relacionamentos, tem q fzr algo diferente
-            TextEntry::make('categoria.nome')
-                ->label('Categoria'),
-            TextEntry::make('tipo.nome')
-                ->label('Tipo'),
-
-            TextEntry::make('preco')
-                ->money('BRL'),
-            TextEntry::make('quantidade'),
-            TextEntry::make('created_at')
-                ->label('Criado em')
-                ->dateTime(),
-            TextEntry::make('updated_at')
-                ->label('Atualizado em')
-                ->dateTime(),
-        ];
-    }
-
-    public static function infolist(Infolist $infolist): Infolist
-    {
-        return $infolist
-            ->schema(self::getInfolistComponents())
-            ->columns(2);
-    }
-
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
     {
-        return [
-            'index' => Pages\ListComidas::route('/'),
-        ];
+        return [];
     }
 
     public static function getGloballySearchableAttributes(): array
@@ -171,12 +73,8 @@ class ComidaResource extends Resource
 
     public static function applyGlobalSearchToQuery(Builder $query, string $search): Builder
     {
-
-        return $query->whereFullText(['nome', 'descricao'], $search);
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->with(['categoria', 'tipo']);
+        return $query->where(function ($q) use ($search) {
+            $q->whereFullText(['nome', 'descricao'], $search);
+        });
     }
 }
