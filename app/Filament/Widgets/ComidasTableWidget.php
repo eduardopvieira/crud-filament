@@ -26,14 +26,14 @@ class ComidasTableWidget extends BaseWidget
     {
         return $table
             ->query($this->getTableQuery())
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('id', 'desc')
             ->columns([
-                TextColumn::make('id')->searchable(),
-                TextColumn::make('nome')->searchable(),
-                TextColumn::make('descricao')->searchable()->words(4),
-                TextColumn::make('categoria.nome')->sortable(),
-                TextColumn::make('tipo.nome')->sortable(),
-                TextColumn::make('preco')->money('BRL'),
+                TextColumn::make('id')->searchable()->label('ID'),
+                TextColumn::make('nome')->searchable()->label('Nome'),
+                TextColumn::make('descricao')->searchable()->words(4)->label('Descrição'),
+                TextColumn::make('categoria.nome')->sortable()->label('Categoria'),
+                TextColumn::make('tipo.nome')->sortable()->label('Tipo'),
+                TextColumn::make('preco')->money('BRL')->label('Preço'),
                 TextColumn::make('quantidade')->sortable(),
             ])
             ->filters([

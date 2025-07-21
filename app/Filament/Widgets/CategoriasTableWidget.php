@@ -2,42 +2,30 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Categoria;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Filament\Tables\Columns\TextColumn;
-use App\Models\Categoria;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Infolists\Components\TextEntry;
 
 class CategoriasTableWidget extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full';
+    protected static bool $isLazy = true;
 
     protected function getTableQuery(): Builder
     {
         return Categoria::query();
     }
 
-    public static function getInfolistComponents(): array
-    {
-        return [
-            TextEntry::make('nome')
-                ->label('Nome da Categoria'),
-            TextEntry::make('created_at')
-                ->label('Criado em')
-                ->dateTime(),
-            TextEntry::make('updated_at')
-                ->label('Atualizado em')
-                ->dateTime(),
-        ];
-    }
-
     public function table(Table $table): Table
     {
         return $table
             ->query($this->getTableQuery())
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('id', 'desc')
             ->columns([
                 TextColumn::make('id')
                     ->searchable()
@@ -56,8 +44,19 @@ class CategoriasTableWidget extends BaseWidget
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->infolist(\App\Filament\Resources\CategoriaResource::getInfolistComponents())
-                    ->label('Visualizar'),
+                    ->label('Visualizar')
+                    ->infolist(fn (Infolist $infolist) => $infolist
+                        ->schema([
+                            TextEntry::make('nome')
+                                ->label('Nome da Categoria'),
+                            TextEntry::make('created_at')
+                                ->label('Criado em')
+                                ->dateTime(),
+                            TextEntry::make('updated_at')
+                                ->label('Atualizado em')
+                                ->dateTime(),
+                        ])
+                    ),
 
                 Tables\Actions\EditAction::make()
                     ->form(\App\Filament\Resources\CategoriaResource::getFormComponents())
@@ -68,6 +67,7 @@ class CategoriasTableWidget extends BaseWidget
                     ->modalCancelActionLabel('Cancelar')
                     ->modalSubmitAction(fn ($action) => $action->color('success'))
                     ->modalCancelAction(fn ($action) => $action->color('danger')),
+
                 Tables\Actions\DeleteAction::make()
                     ->label('Excluir'),
             ])

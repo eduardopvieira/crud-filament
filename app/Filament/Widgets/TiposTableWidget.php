@@ -2,26 +2,30 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Tipo;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Filament\Tables\Columns\TextColumn;
-use App\Models\Tipo;
 use Illuminate\Database\Eloquent\Builder;
 
 class TiposTableWidget extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full';
+    protected static bool $isLazy = true;
 
     protected function getTableQuery(): Builder
     {
         return Tipo::query();
     }
+    
     public function table(Table $table): Table
     {
         return $table
             ->query($this->getTableQuery())
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('id', 'desc')
             ->columns([
                 TextColumn::make('id')
                     ->searchable()
@@ -40,18 +44,30 @@ class TiposTableWidget extends BaseWidget
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->infolist(\App\Filament\Resources\TipoResource::getInfolistComponents())
-                    ->label('Visualizar'),
+                    ->label('Visualizar')
+                    ->infolist(fn (Infolist $infolist) => $infolist
+                        ->schema([
+                            TextEntry::make('nome')
+                                ->label('Nome do Tipo'),
+                            TextEntry::make('created_at')
+                                ->label('Criado em')
+                                ->dateTime(),
+                            TextEntry::make('updated_at')
+                                ->label('Atualizado em')
+                                ->dateTime(),
+                        ])
+                    ),
 
                 Tables\Actions\EditAction::make()
                     ->form(\App\Filament\Resources\TipoResource::getFormComponents())
                     ->color('primary')
                     ->label('Editar')
-                    ->modalHeading('Editar Categoria')
+                    ->modalHeading('Editar Tipo')
                     ->modalSubmitActionLabel('Salvar alterações')
                     ->modalCancelActionLabel('Cancelar')
                     ->modalSubmitAction(fn ($action) => $action->color('success'))
                     ->modalCancelAction(fn ($action) => $action->color('danger')),
+                    
                 Tables\Actions\DeleteAction::make()
                     ->label('Excluir'),
             ])
